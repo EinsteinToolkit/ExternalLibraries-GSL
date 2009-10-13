@@ -16,6 +16,7 @@ GSL_DIR=${INSTALL_DIR}/${NAME}
 
 # Clean up environment
 unset LIBS
+unset MAKEFLAGS
 
 
 
