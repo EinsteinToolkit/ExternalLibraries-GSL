@@ -56,7 +56,7 @@ unset MAKEFLAGS
         make install
         popd
         
-        : > done-${NAME}
+        echo 'done' > done-${NAME}
         echo "GSL: Done."
     fi
 )
