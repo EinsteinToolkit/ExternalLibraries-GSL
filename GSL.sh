@@ -61,6 +61,13 @@ unset MAKEFLAGS
     fi
 )
 
+if (( $? )); then
+    echo 'BEGIN ERROR'
+    echo 'Error while building GSL.  Aborting.'
+    echo 'END ERROR'
+    exit 1
+fi
+
 
 
 ################################################################################
