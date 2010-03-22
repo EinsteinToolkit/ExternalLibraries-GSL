@@ -8,15 +8,38 @@
 set -x                          # Output commands
 set -e                          # Abort on errors
 
-# Set locations
-NAME=gsl-1.12
-SRCDIR=$(dirname $0)
-INSTALL_DIR=${SCRATCH_BUILD}
-GSL_DIR=${INSTALL_DIR}/${NAME}
 
-# Clean up environment
-unset LIBS
-unset MAKEFLAGS
+
+################################################################################
+# Search
+################################################################################
+
+if [ -z "${GSL_DIR}" ]; then
+    echo "BEGIN MESSAGE"
+    echo "GSL selected, but GSL_DIR not set.  Checking some places..."
+    echo "END MESSAGE"
+    
+    FILES="include/gsl/gsl_math.h"
+    DIRS="/usr /usr/local /usr/local/gsl /usr/local/packages/gsl /usr/local/apps/gsl ${HOME} c:/packages/gsl"
+    for file in $FILES; do
+        for dir in $DIRS; do
+            if test -r "$dir/$file"; then
+                GSL_DIR="$dir"
+                break
+            fi
+        done
+    done
+    
+    if [ -z "$GSL_DIR" ]; then
+        echo "BEGIN MESSAGE"
+        echo "GSL not found"
+        echo "END MESSAGE"
+    else
+        echo "BEGIN MESSAGE"
+        echo "Found GSL in ${GSL_DIR}"
+        echo "END MESSAGE"
+    fi
+fi
 
 
 
@@ -24,6 +47,21 @@ unset MAKEFLAGS
 # Build
 ################################################################################
 
+if [ -z "${GSL_DIR}" ]; then
+    echo "BEGIN MESSAGE"
+    echo "Building GSL..."
+    echo "END MESSAGE"
+    
+    # Set locations
+    NAME=gsl-1.12
+    SRCDIR=$(dirname $0)
+    INSTALL_DIR=${SCRATCH_BUILD}
+    GSL_DIR=${INSTALL_DIR}/${NAME}
+
+    # Clean up environment
+    unset LIBS
+    unset MAKEFLAGS
+    
 (
     exec >&2                    # Redirect stdout to stderr
     set -x                      # Output commands
@@ -63,11 +101,13 @@ unset MAKEFLAGS
     fi
 )
 
-if (( $? )); then
-    echo 'BEGIN ERROR'
-    echo 'Error while building GSL.  Aborting.'
-    echo 'END ERROR'
-    exit 1
+    if (( $? )); then
+        echo 'BEGIN ERROR'
+        echo 'Error while building GSL.  Aborting.'
+        echo 'END ERROR'
+        exit 1
+    fi
+
 fi
 
 
@@ -77,8 +117,10 @@ fi
 ################################################################################
 
 # Set options
-GSL_INC_DIRS="${GSL_DIR}/include"
-GSL_LIB_DIRS="${GSL_DIR}/lib"
+if [ "${GSL_DIR}" != '/usr' -a "${GSL_DIR}" != '/usr/local' ]; then
+    GSL_INC_DIRS="${GSL_DIR}/include"
+    GSL_LIB_DIRS="${GSL_DIR}/lib"
+fi
 GSL_LIBS='gsl gslcblas'
 
 # Pass options to Cactus
