@@ -121,7 +121,7 @@ if [ "${GSL_DIR}" != '/usr' -a "${GSL_DIR}" != '/usr/local' ]; then
     GSL_INC_DIRS="${GSL_DIR}/include"
     GSL_LIB_DIRS="${GSL_DIR}/lib"
 fi
-GSL_LIBS='gsl gslcblas'
+: ${GSL_LIBS='gsl gslcblas'}
 
 # Pass options to Cactus
 echo "BEGIN MAKE_DEFINITION"
