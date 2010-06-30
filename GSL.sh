@@ -58,9 +58,12 @@ if [ -z "${GSL_DIR}" ]; then
     INSTALL_DIR=${SCRATCH_BUILD}
     GSL_DIR=${INSTALL_DIR}/${NAME}
 
-    # Clean up environment
+    # Set up environment
     unset LIBS
     unset MAKEFLAGS
+    if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
+        export OBJECT_MODE=64
+    fi
     
 (
     exec >&2                    # Redirect stdout to stderr
@@ -73,6 +76,9 @@ if [ -z "${GSL_DIR}" ]; then
         echo "GSL: The enclosed GSL library has already been built; doing nothing"
     else
         echo "GSL: Building enclosed GSL library"
+        
+        # Should we use gmake or make?
+        MAKE=$(gmake --help > /dev/null 2>&1 && echo gmake || echo make)
         
         echo "GSL: Unpacking archive..."
         rm -rf build-${NAME}
@@ -90,10 +96,10 @@ if [ -z "${GSL_DIR}" ]; then
         ./configure --prefix=${GSL_DIR}
         
         echo "GSL: Building..."
-        make
+        ${MAKE}
         
         echo "GSL: Installing..."
-        make install
+        ${MAKE} install
         popd
         
         echo 'done' > done-${NAME}
