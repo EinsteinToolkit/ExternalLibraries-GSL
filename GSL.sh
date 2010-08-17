@@ -60,7 +60,6 @@ if [ -z "${GSL_DIR}" ]; then
 
     # Set up environment
     unset LIBS
-    unset MAKEFLAGS
     if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
         export OBJECT_MODE=64
     fi
@@ -123,11 +122,11 @@ fi
 ################################################################################
 
 # Set options
-if [ "${GSL_DIR}" != '/usr' -a "${GSL_DIR}" != '/usr/local' ]; then
-    GSL_INC_DIRS="${GSL_DIR}/include"
-    GSL_LIB_DIRS="${GSL_DIR}/lib"
+if [ -x ${GSL_DIR}/bin/gsl-config ]; then
+  GSL_INC_DIRS=`${GSL_DIR}/bin/gsl-config --cflags | sed -e 's/ \+-[^I][^ ]\+//g;s/^ *-[^I][^ ]\+ *//g;s/ \+-I/ /g;s/^ *-I//g'`;
+  GSL_LIB_DIRS=`${GSL_DIR}/bin/gsl-config --libs   | sed -e 's/ \+-[^L][^ ]\+//g;s/^ *-[^L][^ ]\+ *//g;s/ \+-L/ /g;s/^ *-L//g'`;
+  GSL_LIBS=`${GSL_DIR}/bin/gsl-config --libs       | sed -e 's/ \+-[^l][^ ]\+//g;s/^ *-[^l][^ ]\+ *//g;s/ \+-l/ /g;s/^ *-l//g'`;
 fi
-: ${GSL_LIBS='gsl gslcblas'}
 
 # Pass options to Cactus
 echo "BEGIN MAKE_DEFINITION"
