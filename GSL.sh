@@ -133,9 +133,11 @@ fi
 
 # Set options
 if [ -x ${GSL_DIR}/bin/gsl-config ]; then
-    GSL_INC_DIRS=`${GSL_DIR}/bin/gsl-config --cflags | sed -e 's/ \+-[^I][^ ]\+//g;s/^ *-[^I][^ ]\+ *//g;s/ \+-I/ /g;s/^ *-I//g'`;
-    GSL_LIB_DIRS=`${GSL_DIR}/bin/gsl-config --libs   | sed -e 's/ \+-[^L][^ ]\+//g;s/^ *-[^L][^ ]\+ *//g;s/ \+-L/ /g;s/^ *-L//g'`;
-    GSL_LIBS=`${GSL_DIR}/bin/gsl-config --libs       | sed -e 's/ \+-[^l][^ ]\+//g;s/^ *-[^l][^ ]\+ *//g;s/ \+-l/ /g;s/^ *-l//g'`;
+  if [ "${GSL_DIR}" != '/usr' -a "${GSL_DIR}" != '/usr/local' ]; then
+      GSL_INC_DIRS=`${GSL_DIR}/bin/gsl-config --cflags | sed -e 's/ \+-[^I][^ ]\+//g;s/^ *-[^I][^ ]\+ *//g;s/ \+-I/ /g;s/^ *-I//g'`;
+      GSL_LIB_DIRS=`${GSL_DIR}/bin/gsl-config --libs   | sed -e 's/ \+-[^L][^ ]\+//g;s/^ *-[^L][^ ]\+ *//g;s/ \+-L/ /g;s/^ *-L//g'`;
+  fi
+  GSL_LIBS=`${GSL_DIR}/bin/gsl-config --libs       | sed -e 's/ \+-[^l][^ ]\+//g;s/^ *-[^l][^ ]\+ *//g;s/ \+-l/ /g;s/^ *-l//g'`;
 fi
 
 # Pass options to Cactus
