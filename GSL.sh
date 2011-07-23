@@ -61,7 +61,17 @@ if [ -z "${GSL_DIR}" -o "${GSL_DIR}" = 'BUILD' ]; then
     NAME=gsl-1.14
     SRCDIR=$(dirname $0)
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
-    INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
+    if [ -z "${GSL_INSTALL_DIR}" ]; then
+        echo "BEGIN MESSAGE"
+        echo "GSL install directory, GSL_INSTALL_DIR, not set. Installing in the default configuration location. "
+        echo "END MESSAGE"
+     INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
+    else
+        echo "BEGIN MESSAGE"
+        echo "GSL install directory, GSL_INSTALL_DIR, selected. Installing GSL at ${GSL_INSTALL_DIR} "
+        echo "END MESSAGE"
+     INSTALL_DIR=${GSL_INSTALL_DIR}
+    fi
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     GSL_DIR=${INSTALL_DIR}
     
