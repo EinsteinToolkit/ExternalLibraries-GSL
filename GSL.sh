@@ -58,7 +58,7 @@ if [ -z "${GSL_DIR}" -o "${GSL_DIR}" = 'BUILD' ]; then
     
     # Set locations
     THORN=GSL
-    NAME=gsl-1.14
+    NAME=gsl-1.15
     SRCDIR=$(dirname $0)
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${GSL_INSTALL_DIR}" ]; then
@@ -86,11 +86,6 @@ if [ -z "${GSL_DIR}" -o "${GSL_DIR}" = 'BUILD' ]; then
         echo "GSL: The enclosed GSL library has already been built; doing nothing"
     else
         echo "GSL: Building enclosed GSL library"
-        
-        # Should we use gmake or make?
-        MAKE=$(gmake --help > /dev/null 2>&1 && echo gmake || echo make)
-        # Should we use gtar or tar?
-        TAR=$(gtar --help > /dev/null 2> /dev/null && echo gtar || echo tar)
         
         # Set up environment
         unset LIBS
