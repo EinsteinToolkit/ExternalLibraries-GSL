@@ -51,7 +51,9 @@ fi
 # Build
 ################################################################################
 
-if [ -z "${GSL_DIR}" -o "${GSL_DIR}" = 'BUILD' ]; then
+if [ -z "${GSL_DIR}"                                            \
+     -o "$(echo "${GSL_DIR}" | tr '[a-z]' '[A-Z]')" = 'BUILD' ]
+then
     echo "BEGIN MESSAGE"
     echo "Building GSL..."
     echo "END MESSAGE"
