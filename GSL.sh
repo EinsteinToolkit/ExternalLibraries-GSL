@@ -147,12 +147,15 @@ fi
 
 # Set options
 if [ -x ${GSL_DIR}/bin/gsl-config ]; then
-    # Obtain configuration options from GSL's configuration
-    GSL_INC_DIRS="$(echo '' $(${GSL_DIR}/bin/gsl-config --cflags) '' | sed -e 's/ -I/ /g' | sed -e 's+ -L/include + +g;s+ -L/usr/include + +g;s+ -L/usr/local/include + +g')"
-    # Don't try to split library directories and libraries -- just put
-    # everything into "libraries"
-    GSL_LIB_DIRS=''
-    GSL_LIBS="$(echo '' $(${GSL_DIR}/bin/gsl-config --libs) '' | sed -e 's/ -l/ /g' | sed -e 's+ -L/lib + +g;s+ -L/lib64 + +g;s+ -L/usr/lib + +g;s+ -L/usr/lib64 + +g;s+ -L/usr/local/lib + +g;s+ -L/usr/local/lib64 + +g')"
+    # Obtain configuration options from GSL's configuration:
+    # - for INC_DIRS, remove "standard" directories, and remove -I
+    #   prefix from flags
+    # - for LIB_DIRS, remove all -l flags, and remove "standard"
+    #   directories, and remove -L prefix from flags
+    # - for LIBS, keep only -l flags, and remove -l prefix from flags
+    GSL_INC_DIRS="$(echo '' $(${GSL_DIR}/bin/gsl-config --cflags) '' | sed -e 's+ -I/include + +g;s+ -I/usr/include + +g;s+ -I/usr/local/include + +g' | sed -e 's/ -I/ /g')"
+    GSL_LIB_DIRS="$(echo '' $(${GSL_DIR}/bin/gsl-config --libs) '' | sed -e 's/ -l[^ ]*/ /g' | sed -e 's+ -L/lib + +g;s+ -L/lib64 + +g;s+ -L/usr/lib + +g;s+ -L/usr/lib64 + +g;s+ -L/usr/local/lib + +g;s+ -L/usr/local/lib64 + +g' | sed -e 's/ -L/ /g')"
+    GSL_LIBS="$(echo '' $(${GSL_DIR}/bin/gsl-config --libs) '' | sed -e 's/ -[^l][^ ]*/ /g' | sed -e 's/ -l/ /g')"
 fi
 
 # Pass options to Cactus
