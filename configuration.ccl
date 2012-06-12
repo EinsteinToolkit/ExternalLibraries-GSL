@@ -2,7 +2,7 @@
 
 PROVIDES GSL
 {
-  SCRIPT GSL.sh
+  SCRIPT configure.sh
   LANG bash
   OPTIONS GSL_DIR GSL_INSTALL_DIR GSL_LIBS
 }
