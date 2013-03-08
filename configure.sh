@@ -127,7 +127,6 @@ then
         
         date > ${DONE_FILE}
         echo "GSL: Done."
-        
         )
         if (( $? )); then
             echo 'BEGIN ERROR'
