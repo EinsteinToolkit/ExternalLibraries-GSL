@@ -113,7 +113,7 @@ then
         
         echo "GSL: Configuring..."
         cd ${NAME}
-        ./configure --prefix=${GSL_DIR}
+        ./configure --prefix=${GSL_DIR} --enable-shared=no
         
         echo "GSL: Building..."
         ${MAKE}
