@@ -16,7 +16,9 @@ set -e                          # Abort on errors
 # Search
 ################################################################################
 
-if [ -z "${GSL_DIR}" ]; then
+if [ -z "${GSL_DIR}" \
+     -o "$(echo "${GSL_DIR}" | tr '[a-z]' '[A-Z]')" = 'NO_BUILD' ] 
+then
     echo "BEGIN MESSAGE"
     echo "GSL selected, but GSL_DIR not set. Checking some places..."
     echo "END MESSAGE"
