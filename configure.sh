@@ -62,7 +62,7 @@ then
     
     # Set locations
     THORN=GSL
-    NAME=gsl-1.15
+    NAME=gsl-1.16
     SRCDIR=$(dirname $0)
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${GSL_INSTALL_DIR}" ]; then
