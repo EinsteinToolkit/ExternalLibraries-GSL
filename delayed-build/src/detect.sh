@@ -81,7 +81,6 @@ then
 
     # Set locations
     THORN=GSL
-    SRCDIR="$(dirname $0)"
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${GSL_INSTALL_DIR}" ]; then
         INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
@@ -95,6 +94,10 @@ then
     GSL_INC_DIRS="$GSL_DIR/include"
     GSL_LIB_DIRS="$GSL_DIR/lib"
     GSL_LIBS="gsl gslcblas"
+else
+    THORN=GSL
+    DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
+    date > ${DONE_FILE}
 fi
 
 
