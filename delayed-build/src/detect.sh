@@ -81,7 +81,6 @@ then
 
     # Set locations
     THORN=GSL
-    NAME=gsl-1.16
     SRCDIR="$(dirname $0)"
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${GSL_INSTALL_DIR}" ]; then
@@ -92,23 +91,10 @@ then
         echo "END MESSAGE"
         INSTALL_DIR=${GSL_INSTALL_DIR}
     fi
-    DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     GSL_DIR=${INSTALL_DIR}
     GSL_INC_DIRS="$GSL_DIR/include"
     GSL_LIB_DIRS="$GSL_DIR/lib"
     GSL_LIBS="gsl gslcblas"
-    
-    if [ -e ${DONE_FILE} -a ${DONE_FILE} -nt ${SRCDIR}/dist/${NAME}.tar.gz \
-                         -a ${DONE_FILE} -nt ${SRCDIR}/configure.sh ]
-    then
-        echo "BEGIN MESSAGE"
-        echo "GSL has already been built; doing nothing"
-        echo "END MESSAGE"
-    else
-        echo "BEGIN MESSAGE"
-        echo "Will build GSL"
-        echo "END MESSAGE"
-    fi
 fi
 
 
