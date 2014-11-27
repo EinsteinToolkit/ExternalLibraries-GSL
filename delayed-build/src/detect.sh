@@ -107,6 +107,11 @@ fi
 # Configure Cactus
 ################################################################################
 
+# Pass configuration options to build script
+echo "BEGIN MAKE_DEFINITION"
+echo "GSL_INSTALL_DIR = ${GSL_INSTALL_DIR}"
+echo "END MAKE_DEFINITION"
+
 # Set options
 if [ -x ${GSL_DIR}/bin/gsl-config ]; then
     inc_dirs="$(${GSL_DIR}/bin/gsl-config --cflags)"
