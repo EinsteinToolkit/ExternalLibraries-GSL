@@ -6,3 +6,6 @@ PROVIDES GSL
   LANG bash
   OPTIONS GSL_DIR GSL_INSTALL_DIR GSL_LIBS
 }
+
+# Pass configuration options to build script
+REQUIRES GSL
