@@ -1,7 +1,0 @@
-# Main make.code.deps file for thorn GSL
-
-export GSL_INSTALL_DIR
-
-$(CCTK_TARGET) $(OBJS): $(SCRATCH_BUILD)/done/$(THORN)
-$(SCRATCH_BUILD)/done/$(THORN): $(SRCDIR)/build.sh
-	$(SRCDIR)/build.sh
