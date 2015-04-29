@@ -10,4 +10,3 @@ diff -ru gsl-1.16-orig/test/results.c gsl-1.16/test/results.c
  #endif
  #endif
  
-Only in gsl-1.16/test: results.c~
