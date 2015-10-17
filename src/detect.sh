@@ -10,77 +10,36 @@ if [ "$(echo ${VERBOSE} | tr '[:upper:]' '[:lower:]')" = 'yes' ]; then
 fi
 set -e                          # Abort on errors
 
+. $CCTK_HOME/lib/make/bash_utils.sh
 
-
-################################################################################
-# Search
-################################################################################
-
-if [ -z "${GSL_DIR}" ]; then
-    echo "BEGIN MESSAGE"
-    echo "GSL selected, but GSL_DIR not set. Checking some places..."
-    echo "END MESSAGE"
-    
-    FILES="include/gsl/gsl_math.h"
-    DIRS="/usr /usr/local /usr/local/gsl /usr/local/packages/gsl /usr/local/apps/gsl ${HOME} c:/packages/gsl"
-    for dir in $DIRS; do
-        GSL_DIR="$dir"
-        for file in $FILES; do
-            if [ ! -r "$dir/$file" ]; then
-                unset GSL_DIR
-                break
-            fi
-        done
-        if [ -n "$GSL_DIR" ]; then
-            break
-        fi
-    done
-    
-    if [ -z "$GSL_DIR" ]; then
-        echo "BEGIN MESSAGE"
-        echo "GSL not found"
-        echo "END MESSAGE"
-    else
-        echo "BEGIN MESSAGE"
-        echo "Found GSL in ${GSL_DIR}"
-        echo "END MESSAGE"
-    fi
+# Take care of requests to build the library in any case
+GSL_DIR_INPUT=$GSL_DIR
+if [ "$(echo "${GSL_DIR}" | tr '[a-z]' '[A-Z]')" = 'BUILD' ]; then
+    GSL_BUILD=yes
+    GSL_DIR=
+else
+    GSL_BUILD=
 fi
 
+# Try to find the library if build isn't explicitly requested
+if [ -z "${GSL_BUILD}" ]; then
+    find_lib GSL gsl 1 1.0 "gsl" "gsl/gsl_version.h" "$GSL_DIR"
+fi
 
+THORN=GSL
 
 ################################################################################
 # Build
 ################################################################################
 
-if [ -z "${GSL_DIR}"                                            \
-     -o "$(echo "${GSL_DIR}" | tr '[a-z]' '[A-Z]')" = 'BUILD' ]
-then
+if [ -n "$GSL_BUILD" -o -z "${GSL_DIR}" ]; then
     echo "BEGIN MESSAGE"
     echo "Using bundled GSL..."
     echo "END MESSAGE"
     
-    # Check for required tools. Do this here so that we don't require
-    # them when using the system library.
-    if [ "x$TAR" = x ] ; then
-        echo 'BEGIN ERROR'
-        echo 'Could not find tar command.'
-        echo 'Please make sure that the (GNU) tar command is present,'
-        echo 'and that the TAR variable is set to its location.'
-        echo 'END ERROR'
-        exit 1
-    fi
-    if [ "x$PATCH" = x ] ; then
-        echo 'BEGIN ERROR'
-        echo 'Could not find patch command.'
-        echo 'Please make sure that the patch command is present,'
-        echo 'and that the PATCH variable is set to its location.'
-        echo 'END ERROR'
-        exit 1
-    fi
+    check_tools "tar patch"
 
     # Set locations
-    THORN=GSL
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${GSL_INSTALL_DIR}" ]; then
         INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
@@ -95,13 +54,10 @@ then
     GSL_LIB_DIRS="$GSL_DIR/lib"
     GSL_LIBS="gsl gslcblas"
 else
-    THORN=GSL
-    DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
+    DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     date > ${DONE_FILE}
 fi
-
-
 
 ################################################################################
 # Configure Cactus
@@ -126,8 +82,7 @@ if [ -x ${GSL_DIR}/bin/gsl-config ]; then
     GSL_LIBS="$(echo '' $(for flag in $libs; do echo '' $flag; done | grep '^ -l' | sed -e 's/^ -l//'))"
 fi
 
-GSL_INC_DIRS="$(${CCTK_HOME}/lib/sbin/strip-incdirs.sh ${GSL_INC_DIRS})"
-GSL_LIB_DIRS="$(${CCTK_HOME}/lib/sbin/strip-libdirs.sh ${GSL_LIB_DIRS})"
+set_make_vars "GSL" "$GSL_LIBS" "$GSL_LIB_DIRS" "$GSL_INC_DIRS"
 
 # Pass options to Cactus
 echo "BEGIN MAKE_DEFINITION"
