@@ -54,9 +54,11 @@ if [ -n "$GSL_BUILD" -o -z "${GSL_DIR}" ]; then
     GSL_LIB_DIRS="$GSL_DIR/lib"
     GSL_LIBS="gsl gslcblas"
 else
-    mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
-    date > ${DONE_FILE}
+    if [ ! -e ${DONE_FILE} ]; then
+        mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
+        date > ${DONE_FILE}
+    fi
 fi
 
 ################################################################################
