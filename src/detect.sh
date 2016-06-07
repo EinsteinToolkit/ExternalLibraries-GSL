@@ -49,11 +49,13 @@ if [ -n "$GSL_BUILD" -o -z "${GSL_DIR}" ]; then
         echo "END MESSAGE"
         INSTALL_DIR=${GSL_INSTALL_DIR}
     fi
+    GSL_BUILD=1
     GSL_DIR=${INSTALL_DIR}
     GSL_INC_DIRS="$GSL_DIR/include"
     GSL_LIB_DIRS="$GSL_DIR/lib"
     GSL_LIBS="gsl gslcblas"
 else
+    GSL_BUILD=
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     if [ ! -e ${DONE_FILE} ]; then
         mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
@@ -67,6 +69,7 @@ fi
 
 # Pass configuration options to build script
 echo "BEGIN MAKE_DEFINITION"
+echo "GSL_BUILD       = ${GSL_BUILD}"
 echo "GSL_INSTALL_DIR = ${GSL_INSTALL_DIR}"
 echo "END MAKE_DEFINITION"
 
