@@ -71,6 +71,7 @@ fi
 echo "BEGIN MAKE_DEFINITION"
 echo "GSL_BUILD       = ${GSL_BUILD}"
 echo "GSL_INSTALL_DIR = ${GSL_INSTALL_DIR}"
+echo "GSL_CROSS_COMPILE = ${CROSS_COMPILE}"
 echo "END MAKE_DEFINITION"
 
 # Set options
