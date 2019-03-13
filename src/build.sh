@@ -60,7 +60,11 @@ popd
 
 echo "GSL: Configuring..."
 cd ${NAME}
-./configure --prefix=${GSL_DIR} --enable-shared=no
+if [ "x${GSL_CROSS_COMPILE}" = xyes ]; then
+  CROSS_OPTIONS="--host ${CPU}-${VENDOR}-${OS}"
+fi
+
+./configure --prefix=${GSL_DIR} --enable-shared=no ${CROSS_OPTIONS:-}
 
 echo "GSL: Building..."
 ${MAKE}
