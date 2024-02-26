@@ -20,9 +20,7 @@ BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
 if [ -z "${GSL_INSTALL_DIR}" ]; then
     INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
 else
-    echo "BEGIN MESSAGE"
     echo "Installing GSL into ${GSL_INSTALL_DIR} "
-    echo "END MESSAGE"
     INSTALL_DIR=${GSL_INSTALL_DIR}
 fi
 DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
