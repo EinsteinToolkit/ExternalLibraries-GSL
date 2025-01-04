@@ -24,6 +24,20 @@ fi
 # Try to find the library if build isn't explicitly requested
 if [ -z "${GSL_BUILD}" ]; then
     find_lib GSL gsl 1 1.0 "gsl" "gsl/gsl_version.h" "$GSL_DIR"
+    # amend options using gsl-config in case eg pkg-config is not providing all
+    # information
+    if [ -n $GSL_DIR ] && [ -x ${GSL_DIR}/bin/gsl-config ]; then
+        inc_dirs="$(${GSL_DIR}/bin/gsl-config --cflags)"
+        lib_dirs="$(${GSL_DIR}/bin/gsl-config --libs)"
+        libs="$(${GSL_DIR}/bin/gsl-config --libs)"
+        # Translate option flags into Cactus options:
+        # - for INC_DIRS, remove -I prefix from flags
+        # - for LIB_DIRS, remove all -l flags, and remove -L prefix from flags
+        # - for LIBS, keep only -l flags, and remove -l prefix from flags
+        GSL_INC_DIRS="$GSL_INC_DIRS $(echo '' $(for flag in $inc_dirs; do echo '' $flag; done | sed -e 's/^ -I//'))"
+        GSL_LIB_DIRS="$GSL_LIB_DIRS $(echo '' $(for flag in $lib_dirs; do echo '' $flag; done | grep -v '^ -l' | sed -e 's/^ -L//'))"
+        GSL_LIBS="$GSL_LIBS $(echo '' $(for flag in $libs; do echo '' $flag; done | grep '^ -l' | sed -e 's/^ -l//'))"
+    fi
 fi
 
 THORN=GSL
@@ -72,20 +86,6 @@ echo "BEGIN MAKE_DEFINITION"
 echo "GSL_BUILD       = ${GSL_BUILD}"
 echo "GSL_INSTALL_DIR = ${GSL_INSTALL_DIR}"
 echo "END MAKE_DEFINITION"
-
-# Set options
-if [ -x ${GSL_DIR}/bin/gsl-config ]; then
-    inc_dirs="$(${GSL_DIR}/bin/gsl-config --cflags)"
-    lib_dirs="$(${GSL_DIR}/bin/gsl-config --libs)"
-    libs="$(${GSL_DIR}/bin/gsl-config --libs)"
-    # Translate option flags into Cactus options:
-    # - for INC_DIRS, remove -I prefix from flags
-    # - for LIB_DIRS, remove all -l flags, and remove -L prefix from flags
-    # - for LIBS, keep only -l flags, and remove -l prefix from flags
-    GSL_INC_DIRS="$(echo '' $(for flag in $inc_dirs; do echo '' $flag; done | sed -e 's/^ -I//'))"
-    GSL_LIB_DIRS="$(echo '' $(for flag in $lib_dirs; do echo '' $flag; done | grep -v '^ -l' | sed -e 's/^ -L//'))"
-    GSL_LIBS="$(echo '' $(for flag in $libs; do echo '' $flag; done | grep '^ -l' | sed -e 's/^ -l//'))"
-fi
 
 set_make_vars "GSL" "$GSL_LIBS" "$GSL_LIB_DIRS" "$GSL_INC_DIRS"
 
